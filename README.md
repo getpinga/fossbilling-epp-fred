@@ -12,9 +12,6 @@
 
 ## TODO
 
-**Module is not functional at the moment**
-
 - modifyNS
-- nscheck+add in DomainCreate
 - enable/disable privacy
 - lock/unlock
