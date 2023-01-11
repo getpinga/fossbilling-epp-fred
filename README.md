@@ -9,3 +9,12 @@
 4. Configure from **Registrars** tab
 
 5. Add a new TLD using the module from the **New top level domain** tab.
+
+## TODO
+
+**Module is not functional at the moment**
+
+- modifyNS
+- nscheck+add in DomainCreate
+- enable/disable privacy
+- lock/unlock
