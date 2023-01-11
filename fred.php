@@ -440,57 +440,43 @@ class Registrar_Adapter_FRED extends Registrar_AdapterAbstract
 			$contacts = $r->id;
 
 			//host create
-			foreach (['ns1', 'ns2', 'ns3', 'ns4'] as $ns) {
+			foreach (['ns1', 'ns2'] as $ns) {
 				if ($domain->{'get' . ucfirst($ns)}()) {
 					$from = $to = array();
+					$from[] = '/{{ nsid }}/';
+					$c_id = strtoupper($this->generateRandomString());
+					$to[] = $c_id;
 					$from[] = '/{{ name }}/';
-					$to[] = $domain->{'get' . ucfirst($ns)}();
-					$from[] = '/{{ clTRID }}/';
-					$clTRID = str_replace('.', '', round(microtime(1), 3));
-					$to[] = htmlspecialchars($this->config['registrarprefix'] . '-host-check-' . $clTRID);
-					$xml = preg_replace($from, $to, '<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-					<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
-					  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-					  xsi:schemaLocation="urn:ietf:params:xml:ns:epp-1.0 epp-1.0.xsd">
-					  <command>
-						<check>
-						  <host:check
-							xmlns:host="urn:ietf:params:xml:ns:host-1.0"
-							xsi:schemaLocation="urn:ietf:params:xml:ns:host-1.0 host-1.0.xsd">
-							<host:name>{{ name }}</host:name>
-						  </host:check>
-						</check>
-						<clTRID>{{ clTRID }}</clTRID>
-					  </command>
-					</epp>');
-					$r = $this->write($xml, __FUNCTION__);
-					$r = $r->response->resData->children('urn:ietf:params:xml:ns:host-1.0')->chkData;
-
-					if (0 == (int)$r->cd[0]->name->attributes()->avail) {
-						continue;
-					}
-
-					$from = $to = array();
-					$from[] = '/{{ name }}/';
-					$to[] = $domain->{'get' . ucfirst($ns)}();
+					$to[] = $domain->getNs1();
+					$from[] = '/{{ name2 }}/';
+					$to[] = $domain->getNs2();
+					$from[] = '/{{ nstech }}/';
+					$to[] = $contacts;
 					$from[] = '/{{ clTRID }}/';
 					$clTRID = str_replace('.', '', round(microtime(1), 3));
 					$to[] = htmlspecialchars($this->config['registrarprefix'] . '-host-create-' . $clTRID);
-					$xml = preg_replace($from, $to, '<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-					<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
-					  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-					  xsi:schemaLocation="urn:ietf:params:xml:ns:epp-1.0 epp-1.0.xsd">
-					  <command>
-						<create>
-						  <host:create
-						   xmlns:host="urn:ietf:params:xml:ns:host-1.0">
-							<host:name>{{ name }}</host:name>
-							<host:addr ip="v4">5.6.7.8</host:addr>
-						  </host:create>
-						</create>
-						<clTRID>{{ clTRID }}</clTRID>
-					  </command>
-					</epp>');
+					$xml = preg_replace($from, $to, '<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="urn:ietf:params:xml:ns:epp-1.0 epp-1.0.xsd">
+   <command>
+      <create>
+         <nsset:create xmlns:nsset="http://www.nic.cz/xml/epp/nsset-1.2"
+          xsi:schemaLocation="http://www.nic.cz/xml/epp/nsset-1.2 nsset-1.2.2.xsd">
+            <nsset:id>{{ nsid }}</nsset:id>
+            <nsset:ns>
+               <nsset:name>{{ name }}</nsset:name>
+            </nsset:ns>
+            <nsset:ns>
+               <nsset:name>{{ name2 }}</nsset:name>
+            </nsset:ns>
+            <nsset:tech>{{ nstech }}</nsset:tech>
+            <nsset:reportlevel>0</nsset:reportlevel>
+         </nsset:create>
+      </create>
+      <clTRID>{{ clTRID }}</clTRID>
+   </command>
+</epp>');
 					$r = $this->write($xml, __FUNCTION__);
 				}
 			}
@@ -500,32 +486,11 @@ class Registrar_Adapter_FRED extends Registrar_AdapterAbstract
 			$to[] = htmlspecialchars($domain->getName());
 			$from[] = '/{{ period }}/';
 			$to[] = htmlspecialchars($domain->getRegistrationPeriod());
-			if($domain->getNs1()) {
-			$from[] = '/{{ ns1 }}/';
-			$to[] = htmlspecialchars($domain->getNs1());
+			if($nsid) {
+			$from[] = '/{{ nsid }}/';
+			$to[] = $c_id;
 			} else {
-			$from[] = '/{{ ns1 }}/';
-			$to[] = '';
-			}
-			if($domain->getNs2()) {
-			$from[] = '/{{ ns2 }}/';
-			$to[] = htmlspecialchars($domain->getNs2());
-			} else {
-			$from[] = '/{{ ns2 }}/';
-			$to[] = '';
-			}
-			if($domain->getNs3()) {
-			$from[] = '/{{ ns3 }}/';
-			$to[] = htmlspecialchars($domain->getNs3());
-			} else {
-			$from[] = '/{{ ns3 }}/';
-			$to[] = '';
-			}
-			if($domain->getNs4()) {
-			$from[] = '/{{ ns4 }}/';
-			$to[] = htmlspecialchars($domain->getNs4());
-			} else {
-			$from[] = '/{{ ns4 }}/';
+			$from[] = '/{{ nsid }}/';
 			$to[] = '';
 			}
 			$from[] = '/{{ cID_1 }}/';
