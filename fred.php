@@ -687,7 +687,8 @@ class Registrar_Adapter_FRED extends Registrar_AdapterAbstract
               </contact:addr>
             </contact:postalInfo>
             <contact:voice>{{ phonenumber }}</contact:voice>
-            <contact:fax></contact:fax>
+            <contact:fax></contact:fax>    
+	    <contact:voice>{{ email }}</contact:voice>
           </contact:chg>
         </contact:update>
       </update>
@@ -1148,7 +1149,7 @@ class Registrar_Adapter_FRED extends Registrar_AdapterAbstract
 			)
 		);
 		$context = stream_context_create($opts);
-		$this->socket = stream_socket_client("tlsv1.3://{$host}:{$port}", $errno, $errmsg, $timeout, STREAM_CLIENT_CONNECT, $context);
+		$this->socket = stream_socket_client("tlsv1.2://{$host}:{$port}", $errno, $errmsg, $timeout, STREAM_CLIENT_CONNECT, $context);
 
 		if (!$this->socket) {
 			throw new exception("Cannot connect to server '{$host}': {$errmsg}");
