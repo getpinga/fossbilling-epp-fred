@@ -688,7 +688,7 @@ class Registrar_Adapter_FRED extends Registrar_AdapterAbstract
             </contact:postalInfo>
             <contact:voice>{{ phonenumber }}</contact:voice>
             <contact:fax></contact:fax>    
-	    <contact:voice>{{ email }}</contact:voice>
+	    <contact:email>{{ email }}</contact:email>
           </contact:chg>
         </contact:update>
       </update>
