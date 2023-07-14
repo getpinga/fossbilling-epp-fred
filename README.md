@@ -12,6 +12,4 @@
 
 ## TODO
 
-- modifyNS
-- enable/disable privacy
-- lock/unlock
+- add sync
