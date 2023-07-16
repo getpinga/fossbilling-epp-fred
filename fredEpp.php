@@ -8,7 +8,7 @@
  * @license MIT
  */
 
-namespace Pinga\Tembo\Registries;
+namespace Pinga\Tembo;
 
 use Pinga\Tembo\Exception\EppException;
 use Pinga\Tembo\Exception\EppNotConnectedException;
@@ -1186,15 +1186,9 @@ class FredEpp
             }
             $ns = array();
             $i = 0;
-            foreach ($r->ns->hostObj as $hostObj) {
+            foreach ($r->nsset as $hostObj) {
                 $i++;
                 $ns[$i] = (string)$hostObj;
-            }
-            $host = array();
-            $i = 0;
-            foreach ($r->host as $hostname) {
-                $i++;
-                $host[$i] = (string)$hostname;
             }
             $clID = (string)$r->clID;
             $crID = (string)$r->crID;
@@ -1214,7 +1208,6 @@ class FredEpp
                 'registrant' => $registrant,
                 'contact' => $contact,
                 'ns' => $ns,
-                'host' => $host,
                 'clID' => $clID,
                 'crID' => $crID,
                 'crDate' => $crDate,
