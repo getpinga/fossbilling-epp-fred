@@ -99,12 +99,21 @@ try {
         }
         
         $ns = $domainInfo['ns'];
-
-        $ns1 = isset($ns[1]) ? $ns[1] : null;
-        $ns2 = isset($ns[2]) ? $ns[2] : null;
-        $ns3 = isset($ns[3]) ? $ns[3] : null;
-        $ns4 = isset($ns[4]) ? $ns[4] : null;
 		
+        if (isset($ns[1])) {
+            $params = ["hostname" => $ns[1]];
+            $hostInfo = $epp->hostInfo($params);
+            $ns1 = isset($hostInfo['addr'][0]) ? $hostInfo['addr'][0] : null;
+            $ns2 = isset($hostInfo['addr'][1]) ? $hostInfo['addr'][1] : null;
+            $ns3 = isset($hostInfo['addr'][2]) ? $hostInfo['addr'][2] : null;
+            $ns4 = isset($hostInfo['addr'][3]) ? $hostInfo['addr'][3] : null;
+        } else {
+            $ns1 = isset($ns[1]) ? $ns[1] : null;
+            $ns2 = isset($ns[2]) ? $ns[2] : null;
+            $ns3 = isset($ns[3]) ? $ns[3] : null;
+            $ns4 = isset($ns[4]) ? $ns[4] : null;
+		}
+
         $exDate = $domainInfo['exDate'];
         $datetime = new DateTime($exDate);
         $formattedExDate = $datetime->format('Y-m-d H:i:s');
