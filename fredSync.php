@@ -88,7 +88,7 @@ try {
 
     foreach ($domains as $domainRow) {
         // Combine sld and tld into a single domain name
-        $domain = $domainRow['sld'] . $domainRow['tld'];
+        $domain = $domainRow['sld'] . '.' . $domainRow['tld'];
 
         $params = ["domainname" => $domain];
         $domainInfo = $epp->domainInfo($params);
